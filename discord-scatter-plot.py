@@ -3,7 +3,7 @@
 import json
 import os
 import tkinter as tk
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from tkinter import filedialog, colorchooser
 from tkinter import messagebox
 import matplotlib.backends.backend_svg
@@ -61,6 +61,9 @@ def file_type_callback(choice):
 def run_code():
     global yourNameHere
     yourNameHere = username_entry.get()
+
+    JST = timezone(timedelta(hours=9))
+    
     dates = []
     for dir in os.listdir(root):
         if dir == '.idea':  # Skip the .idea directory
@@ -72,7 +75,7 @@ def run_code():
                 with open(os.path.join(dir_path, 'messages.json'), 'r', encoding="utf-8") as json_file:
                     json2 = json.load(json_file)
                     for message in json2:
-                        dates.append(datetime.fromisoformat(message["Timestamp"]))
+                        dates.append(datetime.fromisoformat(message["Timestamp"]).astimezone(JST))
             except FileNotFoundError:
                 print(f"No messages.json found in {dir_path}")
             else:
